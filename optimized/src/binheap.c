@@ -8,8 +8,11 @@
 
 #define VALID_NODE(H, node) ((H)->num_of_elem>(node))
 
-#define ADDR(H, node) ((H)->A+ (node)*(H)->key_size)
-#define INDEX_OF(H, addr) (((addr)-((H)->A))/(H)->key_size)
+// returns the address in A of the key of the node given in input
+#define ADDR(H, node) ((H)->A+ ((H)->key_pos)[node]*(H)->key_size)
+// returns the node corresponding to a given address in A 
+// which is not necessarly the index of that key in A
+#define INDEX_OF(H, addr) (H)->rev_pos[(((addr)-((H)->A))/(H)->key_size)]
 
 int is_heap_empty(const binheap_type *H)
 {
@@ -28,14 +31,16 @@ const void *min_value(const binheap_type *H)
 
 void swap_keys(binheap_type *H, unsigned int n_a, unsigned int n_b)
 {
-    void *p_a = ADDR(H, n_a);
-    void *p_b = ADDR(H, n_b);
-    void *tmp = malloc(H->key_size);
+	// swap the infos in key_pos
+	unsigned int tmp = H->key_pos[n_a];
+	H->key_pos[n_a] = H->key_pos[n_b];
+	H->key_pos[n_b] = tmp;
 
-    memcpy(tmp, p_a, H->key_size);
-    memcpy(p_a, p_b, H->key_size);
-    memcpy(p_b, tmp, H->key_size);
+	// and then propagate on rev_pos
+	H->rev_pos[H->key_pos[n_a]] = n_a;
+	H->rev_pos[H->key_pos[n_b]] = n_b;
 }
+
 
 void heapify(binheap_type *H, unsigned int node)
 {
@@ -49,7 +54,7 @@ void heapify(binheap_type *H, unsigned int node)
         child = RIGHT_CHILD(node);
 
         if (VALID_NODE(H,child) && 
-                H->leq(ADDR(H, child), ADDR(H, node))) {
+                H->leq(ADDR(H, child), ADDR(H, dst_node))) {
             dst_node = child;
         }
 
@@ -85,7 +90,7 @@ const void *extract_min(binheap_type *H)
 
     heapify(H,0);
 
-    return ADDR(H, H->num_of_elem+1);
+    return ADDR(H, H->num_of_elem);
 }
 
 const void *find_the_max(void *A,
@@ -120,7 +125,10 @@ binheap_type *build_heap(void *A,
                          total_order_type leq)
 {
     binheap_type *H = (binheap_type *)malloc(sizeof(binheap_type));
-
+    H->key_pos = (unsigned int *)malloc(sizeof(unsigned int)*max_size); 
+    // returns the position in A of the key corresponding to the input
+    H->rev_pos = (unsigned int *)malloc(sizeof(unsigned int)*max_size);
+    // reversely wrt key_pos, returns the node which position in A array is given
     H->A = A;
     H->num_of_elem = num_of_elem;
     H->max_size = max_size;
@@ -130,6 +138,12 @@ binheap_type *build_heap(void *A,
 
     if (num_of_elem == 0) {
         return H;
+    }
+
+    // initialize key_pos and rev_pos in the simplest way
+    for(unsigned int i = 0; i<num_of_elem; i++) {
+		H->key_pos[i] = i;
+		H->rev_pos[i] = i;
     }
 
     // get the maximum among A[:num_of_elem-1]
@@ -150,9 +164,12 @@ binheap_type *build_heap(void *A,
 
 void delete_heap(binheap_type *H)
 {
+	free(H->key_pos);
+    free(H->rev_pos);
     free(H->max_order_value);
     free(H);
 }
+
 
 const void *decrease_key(binheap_type *H, void *node, const void *value)
 {
@@ -166,25 +183,29 @@ const void *decrease_key(binheap_type *H, void *node, const void *value)
 
     memcpy(node, value, H->key_size);
 
+    // to avoid seg. fault when evaluating ADDR of root's parent
+    if (node_idx==0) return node;
+
     unsigned int parent_idx = PARENT(node_idx);
     void *parent = ADDR(H, parent_idx);
 
     // while node != root and *parent > *node
-    while ((node_idx!=0) && (!H->leq(parent, node))) {
-
+    while ((node_idx!=0) && (!H->leq(parent, value))) {
         // swap parent and node keys
         swap_keys(H, parent_idx, node_idx);
 
         // focus on the node's parent
         node = parent;
         node_idx = parent_idx;
+        // to avoid seg. fault when evaluating ADDR of root's parent
+        if (node_idx==0) return node;
 
         parent_idx = PARENT(node_idx);
         parent = ADDR(H, parent_idx);
     }
-
     return node;
 }
+
 
 const void *insert_value(binheap_type *H, const void *value)
 {
@@ -198,6 +219,10 @@ const void *insert_value(binheap_type *H, const void *value)
         memcpy(H->max_order_value, value, H->key_size);
     }
 
+    // update key_pos and rev_pos
+    H->key_pos[H->num_of_elem] = H->num_of_elem;
+    H->rev_pos[H->num_of_elem] = H->num_of_elem;
+
     // get the position of the new node
     void *new_node_addr = ADDR(H, H->num_of_elem);  
     memcpy(new_node_addr, H->max_order_value, H->key_size);
@@ -208,6 +233,8 @@ const void *insert_value(binheap_type *H, const void *value)
     // decrease the key of the new node
     return decrease_key(H, new_node_addr, value);
 }
+
+
 
 void print_heap(const binheap_type *H, 
                 void (*key_printer)(const void *value))

@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
   for (size_t j = 0; j < STEPS; j++) {
     unsigned int instance_size = (j*INSTANCE_SIZE)/(STEPS-1);
 
-    printf("%ld\t", instance_size);
+    printf("%d\t", instance_size);
     fflush(stdout);
     printf("%lf\t", test(keep_extracting_the_min_heap, 
                          init_heap, destroy_heap,

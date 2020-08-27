@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/edo/Desktop/uni/algorithmic_design/homework/AD_bin_heaps/optimized/src/binheap.c
+binheap.h
+-
+string.h
+-
+stdio.h
+-
+
+/home/edo/Desktop/uni/algorithmic_design/homework/AD_bin_heaps/optimized/src/total_orders.c
+stdlib.h
+-
+
+include/binheap.h
+stdlib.h
+-
+total_orders.h
+-
+
+include/total_orders.h
+

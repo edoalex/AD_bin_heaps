@@ -1,0 +1,10 @@
+/home/edo/Desktop/uni/algorithmic_design/homework/AD_bin_heaps/optimized/CMakeFiles/install/strip.dir
+/home/edo/Desktop/uni/algorithmic_design/homework/AD_bin_heaps/optimized/CMakeFiles/install/local.dir
+/home/edo/Desktop/uni/algorithmic_design/homework/AD_bin_heaps/optimized/CMakeFiles/install.dir
+/home/edo/Desktop/uni/algorithmic_design/homework/AD_bin_heaps/optimized/CMakeFiles/list_install_components.dir
+/home/edo/Desktop/uni/algorithmic_design/homework/AD_bin_heaps/optimized/CMakeFiles/rebuild_cache.dir
+/home/edo/Desktop/uni/algorithmic_design/homework/AD_bin_heaps/optimized/CMakeFiles/edit_cache.dir
+/home/edo/Desktop/uni/algorithmic_design/homework/AD_bin_heaps/optimized/CMakeFiles/test_insert.dir
+/home/edo/Desktop/uni/algorithmic_design/homework/AD_bin_heaps/optimized/CMakeFiles/test_delete_min.dir
+/home/edo/Desktop/uni/algorithmic_design/homework/AD_bin_heaps/optimized/CMakeFiles/common.dir
+/home/edo/Desktop/uni/algorithmic_design/homework/AD_bin_heaps/optimized/CMakeFiles/binheap.dir
