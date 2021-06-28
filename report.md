@@ -12,7 +12,6 @@ The implementation of the binary heap data structure, together with the function
 **Exercise 3**
 For this first version of the binary heap data structure (see next homework sheet and report for an optimized version of it, which avoids swapping elements in the array) some tests have been conducted, that can be summarized in the following table.
 The numbers showed are in seconds and refer to the execution time needed to build a data structure (which size increases during the run) and keep (finding and) removing the minimum until it's empty. The data structures compared are (plain) arrays and binary heaps (implemented through arrays).
-The test, finally, works on a set of 100 instances.
 
 | size  | heaps    | arrays     |
 | ----- | -------- | ---------- |
